@@ -10,10 +10,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.example.tokumemo.flag.MainModel
 import com.example.tokumemo.manager.DataManager
+import com.example.tokumemo.page.NewsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
@@ -29,15 +32,19 @@ class MainActivity : AppCompatActivity() {
 
             }
             R.id.news -> {
-
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayout, NewsFragment())
+                    .commit()
+                return@OnItemSelectedListener true
             }
             R.id.review -> {
 
             }
             R.id.others -> {
-                val intent = Intent(applicationContext, OthersActivity::class.java)
-                startActivity(intent)
-                finish()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayout, NewsFragment())
+                    .commit()
+                return@OnItemSelectedListener true
             }
         }
         false
@@ -46,106 +53,111 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // 隠れWebビューここから（ここで先にログイン処理のみしておく）
-        webView = findViewById(R.id.loginView)
-        webView.settings.javaScriptEnabled = true
-        viewModel = ViewModelProvider(this).get(MainModel::class.java)
-
-        // 検索アプリで開かない
-        webView.webViewClient = object : WebViewClient(){
-            override fun onPageFinished(view: WebView?, url: String?) {
-                if (url != null) {
-                    urlString = url
-                }
-
-                when (viewModel.anyJavaScriptExecute(urlString)) {
-                    MainModel.JavaScriptType.loginIAS -> {
-
-                        if (shouldShowPasswordView()) {
-                            // パスワード登録画面を表示
-                            val intent = Intent(applicationContext, PasswordActivity::class.java)
-                            startActivity(intent)
-                            // 戻ってきた時、startForPasswordActivityを呼び出す
-//                          startForPasswordActivity.launch(intent)
-                        }
-                        else {
-                            val cAccount = encryptedLoad("KEY_cAccount")
-                            val password = encryptedLoad("KEY_password")
-
-                            webView.evaluateJavascript(
-                                "document.getElementById('username').value= '$cAccount'",
-                                null
-                            )
-                            webView.evaluateJavascript(
-                                "document.getElementById('password').value= '$password'",
-                                null
-                            )
-                            webView.evaluateJavascript(
-                                "document.getElementsByClassName('form-element form-button')[0].click();",
-                                null
-                            )
-                        }
-                    }
-                    else -> {}
-                }
-
-                super.onPageFinished(view, url)
-            }
-        }
-
-        webView.loadUrl("https://my.ait.tokushima-u.ac.jp/portal/")
-        // 隠れWebビューここまで
-
+//
+//        // 隠れWebビューここから（ここで先にログイン処理のみしておく）
+//        webView = findViewById(R.id.loginView)
+//        webView.settings.javaScriptEnabled = true
+//        viewModel = ViewModelProvider(this).get(MainModel::class.java)
+//
+//        // 検索アプリで開かない
+//        webView.webViewClient = object : WebViewClient(){
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                if (url != null) {
+//                    urlString = url
+//                }
+//
+//                when (viewModel.anyJavaScriptExecute(urlString)) {
+//                    MainModel.JavaScriptType.loginIAS -> {
+//
+//                        if (shouldShowPasswordView()) {
+//                            // パスワード登録画面を表示
+//                            val intent = Intent(applicationContext, PasswordActivity::class.java)
+//                            startActivity(intent)
+//                            // 戻ってきた時、startForPasswordActivityを呼び出す
+////                          startForPasswordActivity.launch(intent)
+//                        }
+//                        else {
+//                            val cAccount = encryptedLoad("KEY_cAccount")
+//                            val password = encryptedLoad("KEY_password")
+//
+//                            webView.evaluateJavascript(
+//                                "document.getElementById('username').value= '$cAccount'",
+//                                null
+//                            )
+//                            webView.evaluateJavascript(
+//                                "document.getElementById('password').value= '$password'",
+//                                null
+//                            )
+//                            webView.evaluateJavascript(
+//                                "document.getElementsByClassName('form-element form-button')[0].click();",
+//                                null
+//                            )
+//                        }
+//                    }
+//                    else -> {}
+//                }
+//
+//                super.onPageFinished(view, url)
+//            }
+//        }
+//
+//        webView.loadUrl("https://my.ait.tokushima-u.ac.jp/portal/")
+//        // 隠れWebビューここまで
+//
         // メニューバー表示
-        val navView: BottomNavigationView = findViewById(R.id.bottom_nav)
-        navView.setOnItemSelectedListener(onNavigationItemSelectedListener)
+//        val navView: BottomNavigationView = findViewById(R.id.bottom_nav)
+//        navView.setOnItemSelectedListener(onNavigationItemSelectedListener)
 
-        // キャリアセンターを押したとき
-        val Button0 = findViewById<Button>(R.id.carrierCenter)
-        Button0.setOnClickListener{
-            goWeb("0")
-        }
-        // マナバを押したとき
-        val Button1 = findViewById<Button>(R.id.manaba)
-        Button1.setOnClickListener{
-            goWeb("1")
-        }
-        // 教務システムを押したとき
-        val Button2 = findViewById<Button>(R.id.academicAffairsSystem)
-        Button2.setOnClickListener{
-            goWeb("2")
-        }
-        // メールを押したとき
-        val Button3 = findViewById<Button>(R.id.email)
-        Button3.setOnClickListener{
-            goWeb("3")
-        }
-        // 図書館を押したとき
-        val Button4 = findViewById<Button>(R.id.library)
-        Button4.setOnClickListener{
-            goWeb("4")
-        }
-        // 生協を押したとき
-        val Button5 = findViewById<Button>(R.id.seikyou)
-        Button5.setOnClickListener{
-            goWeb("5")
-        }
-        // 成績を押したとき
-        val Button6 = findViewById<Button>(R.id.result)
-        Button6.setOnClickListener{
-            goWeb("6")
-        }
-        // 時間割を押したとき
-        val Button7 = findViewById<Button>(R.id.timetable)
-        Button7.setOnClickListener{
-            goWeb("7")
-        }
-        // シラバスを押したとき
-        val Button8 = findViewById<Button>(R.id.syllabus)
-        Button8.setOnClickListener{
-            goWeb("8")
-        }
+        //BottomNavigationViewの設定
+        val bottomNavigationView=findViewById<BottomNavigationView>(R.id.bottom_nav)
+        val navController=supportFragmentManager.findFragmentById(R.id.fragmentContainerView)
+        bottomNavigationView.setupWithNavController((navController!!.findNavController()))
+//
+//        // キャリアセンターを押したとき
+//        val Button0 = findViewById<Button>(R.id.carrierCenter)
+//        Button0.setOnClickListener{
+//            goWeb("0")
+//        }
+//        // マナバを押したとき
+//        val Button1 = findViewById<Button>(R.id.manaba)
+//        Button1.setOnClickListener{
+//            goWeb("1")
+//        }
+//        // 教務システムを押したとき
+//        val Button2 = findViewById<Button>(R.id.academicAffairsSystem)
+//        Button2.setOnClickListener{
+//            goWeb("2")
+//        }
+//        // メールを押したとき
+//        val Button3 = findViewById<Button>(R.id.email)
+//        Button3.setOnClickListener{
+//            goWeb("3")
+//        }
+//        // 図書館を押したとき
+//        val Button4 = findViewById<Button>(R.id.library)
+//        Button4.setOnClickListener{
+//            goWeb("4")
+//        }
+//        // 生協を押したとき
+//        val Button5 = findViewById<Button>(R.id.seikyou)
+//        Button5.setOnClickListener{
+//            goWeb("5")
+//        }
+//        // 成績を押したとき
+//        val Button6 = findViewById<Button>(R.id.result)
+//        Button6.setOnClickListener{
+//            goWeb("6")
+//        }
+//        // 時間割を押したとき
+//        val Button7 = findViewById<Button>(R.id.timetable)
+//        Button7.setOnClickListener{
+//            goWeb("7")
+//        }
+//        // シラバスを押したとき
+//        val Button8 = findViewById<Button>(R.id.syllabus)
+//        Button8.setOnClickListener{
+//            goWeb("8")
+//        }
     }
 
 

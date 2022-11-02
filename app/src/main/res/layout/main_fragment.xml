@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/main_title"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:text="アプリ開発プロジェクト"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="64dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/main_logo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="ロゴなど" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/carrierCenter"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="キャリアセンター"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_career_center_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/manaba"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="manaba"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_manaba_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/academicAffairsSystem"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="教務システム"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_school_24"
+                app:iconGravity="top" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="bord"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/email"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="メール"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_email_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/library"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="図書館"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_local_library_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/seikyou"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="生協"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_local_cafe_24"
+                app:iconGravity="top" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="bord"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/result"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="成績"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_result_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/timetable"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="時間割"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_time_24"
+                app:iconGravity="top" />
+
+            <Button
+                android:id="@+id/syllabus"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="シラバス"
+                android:textColor="@color/black"
+                app:icon="@drawable/ic_baseline_computer_24"
+                app:iconGravity="top" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <WebView
+        android:id="@+id/loginView"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
