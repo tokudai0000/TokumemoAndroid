@@ -41,15 +41,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainModel
     private lateinit var weatherWebView: WebView
     private lateinit var weatherViewModel: MainModel
-    private var urlString = ""
+    private var urlString = "" // MainModel
 
     lateinit var binding : ActivityMainBinding
-    private var resultText = ""
+    private var resultText = "" // MainModel
     // 徳島大学本部の所在地の緯度経度
-    private var placeLat = 34.07003444012803
-    private var placeLon = 134.55981101249947
+    private var placeLat = 34.07003444012803 // MainModel
+    private var placeLon = 134.55981101249947 // MainModel
 
-    private var iconUrl = ""
+    private var iconUrl = "" // MainModel
 
     override fun onBackPressed() {
         // Android戻るボタン無効
@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 利用規約がアップデートされた場合は？
+        // iOSでは「同意した」利用規約のバージョンをデバイス内に保存し、毎回ConstStructにある最新の利用規約verとを見比べ不一致であれば表示する
         // 初回起動時に利用規約ダイアログを表示
         if (encryptedLoad("isFirstTime") != "false") {
             val dialog = FirstDialogFragment()
@@ -77,9 +79,10 @@ class MainActivity : AppCompatActivity() {
         initWeatherWebIcon()
 
         // 隠れWebビューここから（ここで先にログイン処理のみしておく）
+        // ログイン用のWebView(普段は非表示) <- この方がわかりやすいかも
         webView = findViewById(R.id.loginView)
-        webView.settings.javaScriptEnabled = true
-        viewModel = ViewModelProvider(this)[MainModel::class.java]
+        webView.settings.javaScriptEnabled = true // WebViewのJavaScript動作を許可する
+        viewModel = ViewModelProvider(this)[MainModel::class.java] // これ何してる？
 
         // テストユーザーの場合はjsCountを-1にしておく
 //        if (encryptedLoad("KEY_studentNumber") == "0123456789" && encryptedLoad("KEY_password") == "0000"){
@@ -87,12 +90,13 @@ class MainActivity : AppCompatActivity() {
 //        } else {
 //            DataManager.jsCount = 0
 //        }
-        DataManager.jsCount = 0
+        DataManager.jsCount = 0 // DataManagerは全てのActivityから参照できるから変数名は丁寧に命名した方がいいかも
 
-        // 検索アプリで開かない
+        // 検索アプリで開かない <- 検索アプリとは？
         webView.webViewClient = object : WebViewClient(){
             override fun onPageFinished(view: WebView?, url: String?) {
-                if (url != null) {
+                // urlStringの生存時間が長すぎる
+                if (url != null) { // url == null の場合どうなる？大丈夫？
                     urlString = url
                 }
 
@@ -104,7 +108,9 @@ class MainActivity : AppCompatActivity() {
 //                            val intent = Intent(applicationContext, PasswordActivity::class.java)
 //                            startActivity(intent)
 //                        }
+                        // canExecuteJavascriptとjsCountはDataManagerではなくMainModel
                         if (DataManager.canExecuteJavascript && DataManager.jsCount >= 0) {
+                            // jsCountが2未満の時はどういう時？
                             if (DataManager.jsCount < 2) {
                                 Log.i("jsCount", DataManager.jsCount.toString())
                                 DataManager.jsCount += 1
@@ -139,11 +145,12 @@ class MainActivity : AppCompatActivity() {
         }
         webView.loadUrl("https://eweb.stud.tokushima-u.ac.jp/Portal/")
         // 隠れWebビューここまで
+        // initWebView() と関数を作って分割するのあり
 
-        // 学生証バーコード生成
+        // 学生証バーコード生成 ここで生成するん？学生証ボタン押されてからの方が、動作サクサクじゃない？
         createStudentCard()
 
-        // メニューバー
+        // メニューバー initTabBar() で分けるといいかも
         val Home = findViewById<Button>(R.id.home)
         Home.setOnClickListener{
             val intent = Intent(this, MainActivity::class.java)
@@ -173,7 +180,7 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        // 天気を押したとき
+        // 天気を押したとき initWeather()
         val weather = findViewById<Button>(R.id.weatherButton)
         val weatherIcon = findViewById<Button>(R.id.weatherButton2)
         weather.setOnClickListener{
@@ -183,7 +190,7 @@ class MainActivity : AppCompatActivity() {
             goWeb("https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=3620100")
         }
 
-        // 教務システムを押したとき
+        // 教務システムを押したとき ボタン押された時どう処理してるか今度説明するこれは美しくない
         val Button2 = findViewById<Button>(R.id.academicAffairsSystem)
         Button2.setOnClickListener{
             goWeb("https://eweb.stud.tokushima-u.ac.jp/Portal/StudentApp/sp/Top.aspx")
@@ -317,15 +324,16 @@ class MainActivity : AppCompatActivity() {
                 goWeb("https://manaba.lms.tokushima-u.ac.jp/s/home_summary")
             }
     }
+    // 260行の関数　長いかな
 
-    // パスワードを登録しているか判定し、パスワード画面の表示を行うべきか判定
+    // パスワードを登録しているか判定し、パスワード画面の表示を行うべきか判定　
     private fun shouldShowPasswordView():Boolean {
         val cAccount = encryptedLoad("KEY_cAccount")
         val password = encryptedLoad("KEY_password")
         return (cAccount == "" || password == "")
     }
 
-    // 以下、暗号化してデバイスに保存する(PasswordActivityにも存在するので今後、統一)
+    // 以下、暗号化してデバイスに保存する(PasswordActivityにも存在するので今後、統一)　これViewModelに入れれなかったっけ？
     companion object {
         const val PREF_NAME = "encrypted_prefs"
     }
@@ -363,7 +371,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 押されたWebサイトにとぶ
+    // 押されたWebサイトにとぶ　goよりshowやloadの方がいいかも
     private fun goWeb(pageId: String) {
         val intent = Intent(this, WebActivity::class.java)
         // WebActivityにどのWebサイトを開こうとしているかをIdとして送信して知らせる
@@ -382,7 +390,7 @@ class MainActivity : AppCompatActivity() {
         return sdf.format(nowTime)
     }
 
-    // 天気を取得
+    // 天気を取得 ViewModel
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("SimpleDateFormat")
     @RequiresApi(Build.VERSION_CODES.N)
